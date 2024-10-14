@@ -12,7 +12,7 @@ const getAllDepartment = async (req, res) => {
 const getDepartmentById = async (req, res) => {
     const { id } = req.params;
     try {
-        const [rows] = await pool.query('SELECT dept_id, dept_code, dept_name, user_id, created_at, updated_at FROM departments WHERE dept_id = ?', [id]);
+        const [rows] = await pool.query('SELECT dept_id, dept_code, dept_name, user_id, created_at, updated_at FROM department WHERE dept_id = ?', [id]);
 
         if (rows.length === 0) {
             return res.status(404).json({ error: 'Department not found' });
@@ -28,7 +28,7 @@ const createDepartment = async (req, res) => {
     const { dept_code, dept_name, user_id } = req.body;
 
     try {
-        const [result] = await pool.query('INSERT INTO departments (dept_code, dept_name, user_id) VALUES (?, ?, ?)', [dept_code, dept_name, user_id]);
+        const [result] = await pool.query('INSERT INTO department (dept_code, dept_name, user_id) VALUES (?, ?, ?)', [dept_code, dept_name, user_id]);
         res.status(201).json({ dept_id: result.insertId, dept_code, dept_name, user_id });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -40,7 +40,7 @@ const updateDepartment = async (req, res) => {
     const { dept_code, dept_name, user_id } = req.body;
 
     try {
-        const [result] = await pool.query('UPDATE departments SET dept_code = ?, dept_name = ?, user_id = ? WHERE dept_id = ?', [dept_code, dept_name, user_id, id]);
+        const [result] = await pool.query('UPDATE department SET dept_code = ?, dept_name = ?, user_id = ? WHERE dept_id = ?', [dept_code, dept_name, user_id, id]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Department not found' });
@@ -55,7 +55,7 @@ const updateDepartment = async (req, res) => {
 const deleteDepartment = async (req, res) => {
     const { id } = req.params;
     try {
-        const [result] = await pool.query('DELETE FROM departments WHERE dept_id = ?', [id]);
+        const [result] = await pool.query('DELETE FROM department WHERE dept_id = ?', [id]);
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: 'Department not found' });
