@@ -2,7 +2,7 @@ const pool = require('../config/database');
 
 const getAllDepartment = async (req, res) => {
     try {
-        const [rows] = await pool.query('SELECT dept_id, dept_code, dept_name, user_id, created_at, updated_at FROM departments');
+        const [rows] = await pool.query('SELECT dept_id, dept_code, dept_name, user_id, created_at, updated_at FROM department');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: err.message });
