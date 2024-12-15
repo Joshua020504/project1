@@ -42,21 +42,36 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { fullname, username, passwords } = req.body;
+    const { id } = req.params;
+    const { fullname, email, passwords } = req.body;
 
-  try {
-    const hashedPassword = await bcrypt.hash(passwords, 10);
-    const [result] = await pool.query('UPDATE users SET fullname = ?, username = ?, passwords = ? WHERE id = ?', [fullname, username, hashedPassword, id]);
+    // Log the input
+    console.log('Request Body:', req.body);
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User not found' });
+    try {
+        let query = 'UPDATE users SET fullname = ?, username = ?';
+        const params = [fullname, username];
+
+        if (passwords) {
+            const hashedPassword = await bcrypt.hash(passwords, 10);
+            query += ', passwords = ?';
+            params.push(hashedPassword);
+        }
+
+        query += ' WHERE id = ?';
+        params.push(id);
+
+        const [result] = await pool.query(query, params);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User updated successfully' });
+    } catch (err) {
+        console.error('Error:', err.message);
+        res.status(500).json({ error: err.message });
     }
-
-    res.json({ message: 'User updated successfully' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
 };
 
 const deleteUser = async (req, res) => {
