@@ -33,10 +33,19 @@ const createUser = async (req, res) => {
   const { fullname, username, passwords } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(passwordx, 10);
-    const [result] = await pool.query('INSERT INTO users (fullname, username, passwords) VALUES (?, ?, ?)', [fullname, username, hashedPassword]);
-    res.status(201).json({ id: result.insertId, fullname, username, passwords });
+    // Hash the password correctly using the 'passwords' variable
+    const hashedPassword = await bcrypt.hash(passwords, 10);
+
+    // Execute the query to insert the user data into the database
+    const [result] = await pool.query(
+      'INSERT INTO users (fullname, username, passwords) VALUES (?, ?, ?)',
+      [fullname, username, hashedPassword]
+    );
+
+    // Return the response with the newly created user's information
+    res.status(201).json({ id: result.insertId, fullname, username });
   } catch (err) {
+    // Handle errors gracefully
     res.status(500).json({ error: err.message });
   }
 };
