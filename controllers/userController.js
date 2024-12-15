@@ -52,7 +52,7 @@ const createUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { fullname, email, passwords } = req.body;
+    const { fullname, username, passwords } = req.body;
 
     // Log the input
     console.log('Request Body:', req.body);
